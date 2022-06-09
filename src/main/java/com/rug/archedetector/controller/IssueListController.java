@@ -32,4 +32,9 @@ public class IssueListController {
     public ResponseEntity<?> deleteIssueList(@PathVariable long id) {
         return issueListService.delete(id);
     }
+
+    @PostMapping("/issues/reindex")
+    public void postReindex() throws InterruptedException {
+        issueListService.reindex();
+    }
 }

@@ -51,7 +51,7 @@ public class IssueListIndexer {
      * @param issues the issues belonging to that list
      * @param comments the comments that belong to the issues
      */
-    public void index(IssueList issueList, List<Issue> issues, List<Comment> comments) {
+    public synchronized void index(IssueList issueList, List<Issue> issues, List<Comment> comments) {
         try {
             if(!Files.exists(Path.of("src/main/resources/index/"))){
                 Files.createDirectory(Path.of("src/main/resources/index/"));

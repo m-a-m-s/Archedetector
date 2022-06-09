@@ -5,6 +5,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.rug.archedetector.controller.ReindexWorker;
 import com.rug.archedetector.dao.CommentRepository;
 import com.rug.archedetector.dao.IssueListRepository;
 import com.rug.archedetector.dao.IssueRepository;
@@ -15,9 +16,11 @@ import com.rug.archedetector.model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -143,5 +146,22 @@ public class IssueListService {
             issueListIndexer.deleteIndex(issueList);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("id " + id + " not found"));
+    }
+
+    /**
+     * Todo limit the threading
+     * Todo split work into smaller chunks rather than a whole list at once
+     */
+    public void reindex() throws InterruptedException {
+        List<ReindexWorker> threads = new ArrayList<>();
+        for (IssueList list : getAll()) {
+            threads.add(new ReindexWorker(list, issueListIndexer, issueRepository, commentRepository));
+        }
+        for (ReindexWorker thread : threads) {
+            thread.start();
+        }
+        for (ReindexWorker thread : threads) {
+            thread.join();
+        }
     }
 }
