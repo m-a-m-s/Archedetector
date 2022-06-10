@@ -155,6 +155,7 @@ public class IssueListService {
     public void reindex() throws InterruptedException {
         List<ReindexWorker> threads = new ArrayList<>();
         for (IssueList list : getAll()) {
+            issueListIndexer.deleteIndex(list);
             threads.add(new ReindexWorker(list, issueListIndexer, issueRepository, commentRepository));
         }
         for (ReindexWorker thread : threads) {
