@@ -3,6 +3,7 @@ package com.rug.archedetector.lucene;
 import com.rug.archedetector.model.Comment;
 import com.rug.archedetector.model.Issue;
 import com.rug.archedetector.model.IssueList;
+import com.rug.archedetector.model.Tag;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -36,6 +37,10 @@ public class IssueListIndexer {
             commentBodies.append(c.getBody()).append(" ");
         }
         doc.add(new Field("id", Long.toString(issue.getId()), TextField.TYPE_STORED));
+        doc.add(new Field("key", issue.getKey(), TextField.TYPE_STORED));
+        for (Tag tag : issue.getTags()) {
+            doc.add(new Field("tag", tag.getName(), TextField.TYPE_STORED));
+        }
         doc.add(new Field("summary", issue.getSummary(), TextField.TYPE_STORED));
         doc.add(new Field("description", issue.getDescription(), TextField.TYPE_STORED));
         doc.add(new Field("comments", commentBodies.toString(), TextField.TYPE_STORED));
@@ -71,7 +76,8 @@ public class IssueListIndexer {
                     issueComments.add(comments.get(j));
                     j++;
                 }
-                writer.addDocument(getDocument(issue, issueComments));
+                Document newDoc = getDocument(issue, issueComments);
+                writer.addDocument(newDoc);
             }
             writer.close();
         } catch (Exception e) {

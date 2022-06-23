@@ -11,19 +11,14 @@ import com.rug.archedetector.dao.IssueListRepository;
 import com.rug.archedetector.dao.IssueRepository;
 import com.rug.archedetector.exceptions.ResourceNotFoundException;
 import com.rug.archedetector.lucene.IssueListIndexer;
-import com.rug.archedetector.lucene.MailingListIndexer;
 import com.rug.archedetector.model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,6 +146,8 @@ public class IssueListService {
     /**
      * Todo limit the threading
      * Todo split work into smaller chunks rather than a whole list at once
+     * Todo delete entire index directory instead of just deleting the known issue lists
+     * because that might cause leftover artifacts
      */
     public void reindex() throws InterruptedException {
         List<ReindexWorker> threads = new ArrayList<>();

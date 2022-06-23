@@ -36,7 +36,7 @@ public class Issue {
     @JoinColumn(name = "issue_list_id", nullable = false)
     private IssueList issueList;
 
-    @ManyToMany(targetEntity = Tag.class)
+    @ManyToMany(targetEntity = Tag.class, fetch = FetchType.EAGER)
     @JoinTable(name = "issue_tag",
             joinColumns = @JoinColumn(name = "issue_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")

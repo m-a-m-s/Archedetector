@@ -3,12 +3,14 @@ package com.rug.archedetector.controller;
 import com.rug.archedetector.model.Comment;
 import com.rug.archedetector.model.Issue;
 import com.rug.archedetector.service.IssueService;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -35,5 +37,11 @@ public class IssueController {
     public Page<Issue> getAlLIssuesByQueryCollectionId
             (@PathVariable(value = "queryCollectionId") Long queryCollectionId, Pageable pageable) {
         return issueService.getIssueByQueryCollectionId(queryCollectionId, pageable);
+    }
+
+    @PostMapping("/issue/reindex")
+    public void postReindexPartial(@RequestBody List<String> issues) throws IOException, ParseException {
+        System.out.println(issues.toString());
+        issueService.reindexPartial(issues);
     }
 }
