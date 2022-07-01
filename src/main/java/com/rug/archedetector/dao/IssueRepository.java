@@ -13,6 +13,7 @@ import java.util.List;
 public interface IssueRepository extends JpaRepository<Issue, Long> {
     Page<Issue> findByIssueListId(Long issueListId, Pageable pageable);
     List<Issue> findByIssueListId(Long issueListId);
+    Issue findByKey(String key);
 
     IssueKeyAndTags findIssueById(Long id);
 
